@@ -20,6 +20,7 @@ public class NaiveBayes {
     
     public static void Train(String dataPath) throws IOException{
         DataBase.LoadData(FileManager.ReadFile(dataPath));
+        computeClassWordCount();
         computeTagProbabilities();
         computeWordsProbabilities();
     }
@@ -56,11 +57,12 @@ public class NaiveBayes {
         return DataBase.tagClasses.get(classTag).containsKey(word) ? DataBase.tagClasses.get(classTag).get(word):0;
     }
     
-    private static Integer getClassWordCount(String classTag){
+    private static void computeClassWordCount(){
         Integer count = 0;
-        HashMap<String, Integer> words = DataBase.tagClasses.get(classTag);
-        count = words.keySet().stream().map((word) -> words.get(word)).reduce(count, Integer::sum);
-        return count;
+        for (String tagkey : DataBase.tagClasses.keySet()){
+            HashMap<String, Integer> words = DataBase.tagClasses.get(tagkey);
+            DataBase.tagClassWordCount.put(tagkey, words.keySet().stream().map((word) -> words.get(word)).reduce(count, Integer::sum) + DataBase.uniqueWords.keySet().size());
+        }
     }
     
     //P(word|tag)
@@ -69,7 +71,7 @@ public class NaiveBayes {
         Integer denominator=0;
         for(String tagkey:DataBase.tagClasses.keySet())
         {
-            denominator=getClassWordCount(tagkey)+DataBase.uniqueWords.keySet().size();
+            denominator = DataBase.tagClassWordCount.get(tagkey);
             
             for(String word: DataBase.uniqueWords.keySet())
             {
@@ -79,7 +81,7 @@ public class NaiveBayes {
                     map.put(word, (1+ getWordFrequenciesForClass(tagkey,word))/ denominator.doubleValue() );
                 }
                 else{
-                   map =new HashMap<String,Double>();
+                   map =new HashMap<>();
                    map.put(word, (1+ getWordFrequenciesForClass(tagkey,word))/ denominator.doubleValue() );
                 }
                 DataBase.wordsProbabilities.put(tagkey, map);
@@ -97,12 +99,12 @@ public class NaiveBayes {
         Double grandTotal=0.0;
         for(String tagkey :DataBase.tagClasses.keySet())
         {
-             grandTotal+=getClassWordCount(tagkey);
+             grandTotal+=DataBase.tagClassWordCount.get(tagkey);
         }
         
-        for (String tag : DataBase.tagClasses.keySet())
+        for (String tagkey : DataBase.tagClasses.keySet())
         {
-            DataBase.tagProbabilities.put(tag, getClassWordCount(tag) / grandTotal);
+            DataBase.tagProbabilities.put(tagkey, DataBase.tagClassWordCount.get(tagkey) / grandTotal);
         }
     }
 }

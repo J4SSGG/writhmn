@@ -18,7 +18,7 @@ public class App
         Scanner scanner = new Scanner(System. in); 
         
         
-         NaiveBayes.Train("naiveTestSimple");
+         //NaiveBayes.Train("naiveTestSimple");
          while(true){
              NaiveBayes.Classify(scanner.nextLine());
          }

@@ -20,7 +20,7 @@ public class DataBase {
     
     public static HashMap<String, HashMap<String, Double>> wordsProbabilities = new HashMap<>();
     public static HashMap<String, Double> tagProbabilities = new HashMap<>();
-    
+    public static HashMap<String, Integer> tagClassWordCount = new HashMap<>();
     
     public static boolean LoadData(List<String> documents){
         documents.forEach((doc) -> {
@@ -76,7 +76,8 @@ public class DataBase {
                 }
                 else{
                     // tag does not exist
-                    tagClasses.put(docTag, new HashMap<String, Integer>()); // create new tag entry
+
+                    tagClasses.put(docTag, new HashMap<>()); // create new tag entry
                     
                     for (String docWord : docWords){ // associate words for the tag... 
                         insertUniqueWord(docWord);
