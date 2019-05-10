@@ -19,19 +19,19 @@ import java.util.List;
  */
 public class FileManager {
     
-    public static void PrintFile(String path) throws FileNotFoundException, IOException{
+    public static boolean PrintFile(String path) throws FileNotFoundException, IOException{
         File file = new File(path); 
         
         // file exists? 
         if(!file.exists()){
             System.out.println("-File not found.");
-            return;
+            return false;
         }
         
         // file is empty? 
         if(file.length() == 0){
             System.out.println("-File is empty.");
-            return;
+            return false;
         }
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF8"));
@@ -42,7 +42,7 @@ public class FileManager {
           System.out.println(line);
         
         reader.close();
-        
+        return true;
         
          
     }
@@ -52,7 +52,7 @@ public class FileManager {
         
         // file exists? 
         if(!file.exists()){
-            System.out.println("-File not found.");
+            System.out.println("-File not found: " + file.getAbsolutePath());
             return null;
         }
         
@@ -64,7 +64,7 @@ public class FileManager {
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF8"));
         
-        List<String> buffer = new LinkedList<String>();
+        List<String> buffer = new LinkedList<>();
         String line; 
         while ((line = reader.readLine()) != null)
           buffer.add(line);

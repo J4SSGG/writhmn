@@ -23,17 +23,35 @@ public class DataBase {
     public static HashMap<String, Integer> tagClassWordCount = new HashMap<>();
     
     public static boolean LoadData(List<String> documents){
+        if (documents == null) return false;
         documents.forEach((doc) -> {
             
-            // Split data to get Words and Tags from documents...
+            if (!doc.equals("")){
+                // Split data to get Words and Tags from documents...
             String[] docSplited = Arrays.stream(doc.split(Pattern.quote("|")))
                     .map(String::trim)
                     .filter(next -> !next.isEmpty())
+                    .filter(next -> next != null)
                     .toArray(String[]::new);
+            
             
             String[] docWords = Arrays.stream(docSplited[0].split(Pattern.quote(" ")))
                     .map(String::trim)
                     .map(String::toLowerCase)
+                    .map(next -> next.replaceAll("\\.", ""))
+                    .map(next -> next.replaceAll(",", ""))
+                    .map(next -> next.replaceAll("'", ""))
+                    .map(next -> next.replaceAll("\"", ""))
+                    .map(next -> next.replaceAll("á", "a"))
+                    .map(next -> next.replaceAll("é", "e"))
+                    .map(next -> next.replaceAll("í", "i"))
+                    .map(next -> next.replaceAll("ú", "u"))
+                    .map(next -> next.replaceAll("ó", "o"))
+                    .map(next -> next.replaceAll("-n", ""))
+                    .map(next -> next.replaceAll("\\)", " "))
+                    .map(next -> next.replaceAll("\\(", " "))
+                    .map(next -> next.replaceAll("!", " "))
+                    .map(next -> next.replaceAll("¡", " "))   
                     .filter(next -> !next.isEmpty())
                     .toArray(String[]::new);
             
@@ -84,6 +102,8 @@ public class DataBase {
                         updateHash(docTag, docWord, 1); // default value of one, because it is the first ocurrence...
                     }
                 }
+            }
+            
             }
             
         });
