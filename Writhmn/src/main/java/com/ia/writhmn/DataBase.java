@@ -15,12 +15,14 @@ import java.util.regex.Pattern;
  * @author abraham
  */
 public class DataBase {
-    private static HashMap<String, Character> uniqueWords = new HashMap<>();
-    private static HashMap<String, HashMap<String, Integer>> tagClasses = new HashMap<>();
-
+    public static HashMap<String, Character> uniqueWords = new HashMap<>();
+    public static HashMap<String, HashMap<String, Integer>> tagClasses = new HashMap<>();
+    
+    public static HashMap<String, HashMap<String, Double>> wordsProbabilities = new HashMap<>();
+    public static HashMap<String, Double> tagProbabilities = new HashMap<>();
     
     
-    public boolean LoadData(List<String> documents){
+    public static boolean LoadData(List<String> documents){
         documents.forEach((doc) -> {
             
             // Split data to get Words and Tags from documents...
@@ -31,6 +33,7 @@ public class DataBase {
             
             String[] docWords = Arrays.stream(docSplited[0].split(Pattern.quote(" ")))
                     .map(String::trim)
+                    .map(String::toLowerCase)
                     .filter(next -> !next.isEmpty())
                     .toArray(String[]::new);
             
@@ -65,6 +68,9 @@ public class DataBase {
                         insertUniqueWord(docWord); // update uniqueWords HashMap
                         if (tagClass.containsKey(docWord)){
                             updateHash(docTag, docWord, tagClass.get(docWord) + 1); // increments frequency
+                        }
+                        else{
+                            updateHash(docTag, docWord, 1);
                         }   
                     }
                 }
@@ -85,13 +91,13 @@ public class DataBase {
     }
     
     
-    private void updateHash(String docTag, String docWord, Integer value){
+    private static void updateHash(String docTag, String docWord, Integer value){
         HashMap<String, Integer> tagClass = tagClasses.get(docTag);
         tagClass.put(docWord, value);
         tagClasses.put(docTag, tagClass);
     }
     
-    private void insertUniqueWord(String docWord){
+    private static void insertUniqueWord(String docWord){
         if (uniqueWords.containsKey(docWord)) return;
         
         uniqueWords.put(docWord, '.');
