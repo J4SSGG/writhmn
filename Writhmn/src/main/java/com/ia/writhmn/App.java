@@ -1,6 +1,7 @@
 package com.ia.writhmn;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 
 
@@ -13,10 +14,13 @@ public class App
     public static void main( String[] args ) throws IOException
     {
         
-        //FileManager.PrintFile("naiveTest");
-        DataBase db = new DataBase();
+       
+        Scanner scanner = new Scanner(System. in); 
         
-        db.LoadData(FileManager.ReadFile("naiveTest"));
-        System.out.println("done");
+        
+         NaiveBayes.Train("naiveTestSimple");
+         while(true){
+             NaiveBayes.Classify(scanner.nextLine());
+         }
     }
 }
